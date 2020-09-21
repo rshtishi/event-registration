@@ -21,14 +21,13 @@ public class Event {
 	private String place;
 	private LocalDateTime startsAt;
 	private LocalDateTime endsAt;
-	
+
 	public Event() {
 		super();
 	}
 
-	public Event(int id, String name, String place, LocalDateTime startsAt, LocalDateTime endsAt) {
+	public Event(String name, String place, LocalDateTime startsAt, LocalDateTime endsAt) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.place = place;
 		this.startsAt = startsAt;
@@ -101,6 +100,6 @@ public class Event {
 		if (id != other.id)
 			return false;
 		return true;
-	}	
+	}
 
 }
