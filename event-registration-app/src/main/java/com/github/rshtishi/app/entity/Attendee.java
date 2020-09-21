@@ -1,5 +1,6 @@
 package com.github.rshtishi.app.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ public class Attendee {
 	private int id;
 	private String fullName;
 	private String email;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name = "event_id")
 	private Event event;
 
@@ -24,9 +25,8 @@ public class Attendee {
 		super();
 	}
 
-	public Attendee(int id, String fullName, String email, Event event) {
+	public Attendee(String fullName, String email, Event event) {
 		super();
-		this.id = id;
 		this.fullName = fullName;
 		this.email = email;
 		this.event = event;
