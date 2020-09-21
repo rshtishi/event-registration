@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS attendee (
 	full_name  VARCHAR(120),
 	email VARCHAR(120),
 	event_id INTEGER,
-	CONSTRAINT event_fk FOREIGN KEY event_id REFERENCES event(id)
+	CONSTRAINT event_fk FOREIGN KEY (event_id) REFERENCES event(id)
 );
