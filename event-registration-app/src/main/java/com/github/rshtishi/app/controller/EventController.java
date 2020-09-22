@@ -2,9 +2,14 @@ package com.github.rshtishi.app.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,7 +23,7 @@ import com.github.rshtishi.app.service.IEventService;
 @Controller
 @RequestMapping("/events")
 public class EventController {
-	
+
 	@Autowired
 	private IEventService eventService;
 
@@ -33,15 +38,16 @@ public class EventController {
 		if (errors.hasErrors()) {
 			return "new-event";
 		}
+		eventService.save(eventDto);
 		return "redirect:/events";
 	}
 
 	@GetMapping
 	public String showEvents(Model model) {
 		List<EventDto> events = eventService.findAllEvents();
-		System.out.println(events);
-		model.addAttribute("events",events);
+		model.addAttribute("events", events);
 		return "events";
 	}
+
 
 }

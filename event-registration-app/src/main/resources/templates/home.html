@@ -19,8 +19,8 @@ img {
 		<div class="jumbotron">
 			<h1>Welcome to Event-Registration App</h1>
 			<div>
-				<button type="button" class="btn btn-outline-primary">Sign In</button>
-				<button type="button" class="btn btn-outline-secondary">Register To Events</button>
+				<a  th:href="@{'/login'}" class="btn btn-outline-primary"  sec:authorize="isAnonymous()">Sign In</a>
+				<a  th:href="@{'/events'}" class="btn btn-outline-success">Register To Events</a>
 			</div>
 		</div>
 		<div>
