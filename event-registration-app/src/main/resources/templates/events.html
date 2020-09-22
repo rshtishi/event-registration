@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>New Event</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+	crossorigin="anonymous"></script>
+<style>
+.table td {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div id="layoutSidenav_content">
+		<main>
+		<div class="container-fluid">
+			<h1 class="mt-4">Events</h1>
+
+
+			<div class="card mb-4">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%"
+							cellspacing="0">
+							<thead>
+								<td>No</td>
+								<td>Name</td>
+								<td>Place</td>
+								<td>Start Date</td>
+								<td>Start Time</td>
+								<td>End Date</td>
+								<td>End Time</td>
+								<td>Actions</td>
+							</thead>
+							<tbody>
+								<tr th:each="event : ${events}">
+									<td th:text="${event.id}"></td>
+									<td th:text="${event.name}"></td>
+									<td th:text="${event.place}"></td>
+									<td th:text="${event.startDate}"></td>
+									<td th:text="${event.startTime}"></td>
+									<td th:text="${event.endDate}"></td>
+									<td th:text="${event.endTime}"></td>
+									<td><button type="button" class="btn btn-outline-success">Register</button></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		</main>
+		<footer class="py-4 bg-light mt-auto">
+			<div class="container-fluid">
+				<div class="d-flex align-items-center justify-content-between small">
+					<div class="text-muted">Copyright &copy; Your Website 2020</div>
+					<div>
+						<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
+							&amp; Conditions</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+	</div>
+
+
+	<script th:src="@{/js/bootstrap.js}"></script>
+</body>
+</html>
