@@ -23,7 +23,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/events/new").access("hasRole('ROLE_USER')").antMatchers("/", "**")
 				.access("permitAll").and().formLogin().loginPage("/login").defaultSuccessUrl("/events/new").and()
-				.logout().logoutUrl("/logout").logoutSuccessUrl("/");
+				.logout().logoutUrl("/logout").logoutSuccessUrl("/")
+				.and().csrf()
+				.ignoringAntMatchers("/h2-console/**")// don't apply CSRF protection to /h2-console
+				.and().headers().frameOptions().sameOrigin();
 	}
 
 	@Bean

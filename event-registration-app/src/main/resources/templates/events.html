@@ -49,7 +49,7 @@
 									<td th:text="${event.startTime}"></td>
 									<td th:text="${event.endDate}"></td>
 									<td th:text="${event.endTime}"></td>
-									<td><button type="button" class="btn btn-outline-success">Register</button></td>
+									<td><a th:href="@{events/register/{id}(id=${event.id})}" class="btn btn-outline-success">Register</a></td>
 								</tr>
 
 							</tbody>

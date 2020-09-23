@@ -17,7 +17,7 @@ public class Attendee {
 	private int id;
 	private String fullName;
 	private String email;
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
 	@JoinColumn(name = "event_id")
 	private Event event;
 
