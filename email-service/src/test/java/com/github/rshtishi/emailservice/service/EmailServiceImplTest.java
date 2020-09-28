@@ -1,5 +1,8 @@
 package com.github.rshtishi.emailservice.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -22,10 +25,27 @@ class EmailServiceImplTest {
 	@Disabled
 	void testSendMail() {
 		// setup
-		Mail mail = new Mail("mr.shtishi@mail.com", "rando.shtishi@gmail.com", "hope", "this worked");
+		Mail mail = new Mail("mr.shtishi@mail.com", "rando.shtishi@gmail.com", "Simple Title", "Simple Content");
 		// execute
 		emailService.sendEmail(mail);
 		// verify
+	}
+	
+	@Test
+	@Order(2)
+	void testSendMailWithTemplate() throws Exception {
+		//setup
+		Mail mail = new Mail("mr.shtishi@mail.com", "rando.shtishi@gmail.com", "Confirmation from Event Reistration", "");
+		String templateName = "event-registration-template.ftl";
+		Map<String, Object> templateModel = new HashMap<>();
+		templateModel.put("name", "Rando Shtishi");
+		templateModel.put("event","Java Summit");
+		templateModel.put("identificationNo","123456987");
+		templateModel.put("signature", "Rando");
+		//execute
+		emailService.sendEmail(mail, templateName, templateModel);
+		
+		
 	}
 
 }

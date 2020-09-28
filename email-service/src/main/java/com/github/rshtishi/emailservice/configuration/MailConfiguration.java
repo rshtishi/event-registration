@@ -47,5 +47,6 @@ public class MailConfiguration {
 
 		return mailSender;
 	}
+	
 
 }
