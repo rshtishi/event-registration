@@ -7,21 +7,25 @@ import org.springframework.stereotype.Service;
 
 import com.github.rshtishi.emailservice.entity.Mail;
 
-
 @Service
 public class EmailServiceImpl implements EmailService {
-	
+
 	@Autowired
 	private JavaMailSender emailSender;
-	
+
 	@Override
 	public void sendEmail(Mail mail) {
-	       SimpleMailMessage message = new SimpleMailMessage(); 
-	        message.setFrom(mail.getFrom());
-	        message.setTo(mail.getTo()); 
-	        message.setSubject(mail.getSubject()); 
-	        message.setText(mail.getContent());
-	        emailSender.send(message);
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom(mail.getFrom());
+		message.setTo(mail.getTo());
+		message.setSubject(mail.getSubject());
+		message.setText(mail.getContent());
+		emailSender.send(message);
+	}
+
+	@Override
+	public void sendMimeEmail(Mail mail) {
+
 	}
 
 }

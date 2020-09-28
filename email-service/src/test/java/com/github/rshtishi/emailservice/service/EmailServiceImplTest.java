@@ -10,12 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.github.rshtishi.emailservice.entity.Mail;
 
-
-
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class EmailServiceImplTest {
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -23,12 +21,11 @@ class EmailServiceImplTest {
 	@Order(1)
 	@Disabled
 	void testSendMail() {
-		//setup
+		// setup
 		Mail mail = new Mail("mr.shtishi@mail.com", "rando.shtishi@gmail.com", "hope", "this worked");
-		//execute
+		// execute
 		emailService.sendEmail(mail);
-		//verify
-		
+		// verify
 	}
 
 }
