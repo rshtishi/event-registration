@@ -17,7 +17,8 @@ public class Attendee {
 	private int id;
 	private String fullName;
 	private String email;
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+	private String registrationId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "event_id")
 	private Event event;
 
@@ -25,11 +26,12 @@ public class Attendee {
 		super();
 	}
 
-	public Attendee(String fullName, String email, Event event) {
+	public Attendee(String fullName, String email, Event event, String registrationId) {
 		super();
 		this.fullName = fullName;
 		this.email = email;
 		this.event = event;
+		this.registrationId = registrationId;
 	}
 
 	public int getId() {
@@ -64,9 +66,18 @@ public class Attendee {
 		this.event = event;
 	}
 
+	public String getRegistrationId() {
+		return registrationId;
+	}
+
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
+	}
+
 	@Override
 	public String toString() {
-		return "Attendee [id=" + id + ", fullName=" + fullName + ", email=" + email + "]";
+		return "Attendee [id=" + id + ", fullName=" + fullName + ", email=" + email + ", registrationId="
+				+ registrationId + ", event=" + event + "]";
 	}
 
 	@Override
