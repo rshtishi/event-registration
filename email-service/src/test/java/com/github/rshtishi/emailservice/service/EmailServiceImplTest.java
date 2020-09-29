@@ -33,6 +33,7 @@ class EmailServiceImplTest {
 	
 	@Test
 	@Order(2)
+	@Disabled
 	void testSendMailWithTemplate() throws Exception {
 		//setup
 		Mail mail = new Mail("mr.shtishi@mail.com", "rando.shtishi@gmail.com", "Confirmation from Event Reistration", "");

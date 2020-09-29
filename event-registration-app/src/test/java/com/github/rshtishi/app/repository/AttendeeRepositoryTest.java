@@ -51,7 +51,7 @@ class AttendeeRepositoryTest {
 		//setup
 		Event event = new Event("Kafka Summit", "Tirana", LocalDateTime.of(2020, 12, 5, 18, 0),
 				LocalDateTime.of(2020, 12, 5, 18, 0));
-		Attendee attendee = new Attendee("Roni Fagu", "rfagu@gmil.com", event);
+		Attendee attendee = new Attendee("Roni Fagu", "rfagu@gmil.com", event,"4454546576768");
 		attendee.setEvent(event);
 		//execute
 		Attendee attendeeSaved = attendeeRepository.save(attendee);
