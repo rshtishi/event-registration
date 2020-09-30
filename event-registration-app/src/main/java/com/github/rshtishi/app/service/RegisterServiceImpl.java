@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.rshtishi.app.entity.Attendee;
 import com.github.rshtishi.app.entity.Event;
+import com.github.rshtishi.app.producer.RegistrationEventProducer;
 import com.github.rshtishi.app.repository.AttendeeRepository;
 import com.github.rshtishi.app.repository.EventRepository;
 
@@ -18,6 +19,8 @@ public class RegisterServiceImpl implements IRegisterService {
 	private EventRepository eventRepository;
 	@Autowired
 	private AttendeeRepository attendeeRepository;
+	@Autowired
+	private RegistrationEventProducer producer;
 	
 
 	@Override
