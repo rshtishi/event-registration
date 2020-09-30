@@ -1,5 +1,7 @@
 package com.github.rshtishi.app.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class RegisterServiceImpl implements IRegisterService {
 	public void registerAttendee(Attendee attendee, int eventId) {
 		Event event = eventRepository.findById(eventId);
 		attendee.setEvent(event);
+		attendee.setRegistrationId(UUID.randomUUID().toString());
 		attendeeRepository.save(attendee);
 	}
 
