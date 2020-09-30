@@ -11,6 +11,7 @@ import com.github.rshtishi.app.entity.Event;
 import com.github.rshtishi.app.producer.RegistrationEventProducer;
 import com.github.rshtishi.app.repository.AttendeeRepository;
 import com.github.rshtishi.app.repository.EventRepository;
+import com.github.rshtishi.app.service.helper.AttendeeHelper;
 
 @Service
 public class RegisterServiceImpl implements IRegisterService {
@@ -30,6 +31,7 @@ public class RegisterServiceImpl implements IRegisterService {
 		attendee.setEvent(event);
 		attendee.setRegistrationId(UUID.randomUUID().toString());
 		attendeeRepository.save(attendee);
+		producer.sendTo(AttendeeHelper.convert(attendee));
 	}
 
 }
