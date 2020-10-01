@@ -1,6 +1,8 @@
 package com.github.rshtishi.emailservice.entity;
 
-public class EventSubscriber {
+import java.io.Serializable;
+
+public class EventSubscriber implements Serializable{
 
 	private String subscriberName;
 	private String subscriberEmail;
