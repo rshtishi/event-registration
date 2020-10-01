@@ -1,6 +1,8 @@
 package com.github.rshtishi.app.dto;
 
-public class AttendeeDto {
+import java.io.Serializable;
+
+public class AttendeeDto implements Serializable{
 
 	private String name;
 	private String email;

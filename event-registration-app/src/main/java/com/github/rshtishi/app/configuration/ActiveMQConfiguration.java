@@ -18,9 +18,9 @@ import org.springframework.jms.support.converter.MessageType;
 @Configuration
 public class ActiveMQConfiguration {
 	
-	@Value("activemq.url")
+	@Value("${activemq.url}")
 	private String activemqUrl;
-	@Value("activemq.queue")
+	@Value("${activemq.queue}")
 	private String activemqQueue;
 	
 	@Bean

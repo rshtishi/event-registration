@@ -12,7 +12,7 @@ public class RegistrationEventProducer {
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Value("activemq.queue")
+	@Value("${activemq.queue}")
 	private String destination ;
 	
     public void sendTo(AttendeeDto attendee) {
