@@ -26,7 +26,7 @@ import com.github.rshtishi.emailservice.entity.EventSubscriber;
 @Configuration
 public class ActiveMQConfiguration {
 
-	@Value("${activemq.url}")
+	@Value("${spring.activemq.broker-url}")
 	private String activemqUrl;
 	@Value("${activemq.queue}")
 	private String activemqQueue;

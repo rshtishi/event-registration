@@ -15,7 +15,8 @@ public class EventNewSubscriberConsumer {
 	
 	@JmsListener(destination = "new.registration")
 	public void consumeMessage(EventSubscriber subscriber) {
-		eventNotificationService.notifyEventSubscriberByEmail(subscriber);
+		//eventNotificationService.notifyEventSubscriberByEmail(subscriber);
+		System.out.println(subscriber);
 	}
 
 }

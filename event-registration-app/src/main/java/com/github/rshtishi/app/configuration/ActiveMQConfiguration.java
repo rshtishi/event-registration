@@ -23,7 +23,7 @@ import com.github.rshtishi.app.dto.AttendeeDto;
 @Configuration
 public class ActiveMQConfiguration {
 	
-	@Value("${activemq.url}")
+	@Value("${spring.activemq.broker-url}")
 	private String activemqUrl;
 	@Value("${activemq.queue}")
 	private String activemqQueue;
