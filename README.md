@@ -40,6 +40,185 @@ We implemented asynchronous communication with:
  - Kafka
  
  
+ ### JMS(ActiveMQ)
+ 
+ JMS is a Java standard that defines a common API for working with message brokers. With JMS, all compliant implementations can be worked with via a common interface in much the same way that JDBC has given relational database operations a common interface. We are going to use ActiveMQ as broker implementation.
+ 
+ #### Implementing the Producer
+ 
+ The event-registration-app module will be our producer. Every time a user registers in our application, the event-registration-app module will create a message and 
+ send it to the broker. To implement the producer we start by adding the dependencies needed:
+ 
+ ```
+ 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+ ```
+ 
+ Next, we add the configuration information for ActiveMQ:
+ 
+ ```
+ spring.activemq.broker-url=tcp://localhost:61616
+ activemq.queue=new.registration
+ ```
+ 
+ We proceed with creating the beans needed to send the message to the broker:
+ 
+ ```
+ @Configuration
+public class ActiveMQConfiguration {
+	
+	@Value("${spring.activemq.broker-url}")
+	private String activemqUrl;
+	@Value("${activemq.queue}")
+	private String activemqQueue;
+	
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		return new ActiveMQConnectionFactory(activemqUrl);
+	}
+	
+	@Bean
+	public Queue destination() {
+		return new ActiveMQQueue(activemqQueue);
+	}
+	
+	@Bean
+	public JmsTemplate jmsTemplate() {
+		JmsTemplate jmsTemplate = new JmsTemplate();
+		jmsTemplate.setConnectionFactory(connectionFactory());
+		jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
+		return jmsTemplate;
+	}
+	
+
+    @Bean 
+    public MessageConverter jacksonJmsMessageConverter() {
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setTargetType(MessageType.TEXT);
+        converter.setTypeIdPropertyName("_typeId");
+        Map<String, Class<?>> typeIdMappings = new HashMap<String, Class<?>>();
+        typeIdMappings.put("subscriber", AttendeeDto.class);
+        converter.setTypeIdMappings(typeIdMappings);
+        return converter;
+    }
+}
+ ```
+ 
+ Finally,  we have the producer class that will send messages to the broker:
+ 
+ ```
+ @Component
+public class RegistrationEventProducer {
+
+	@Autowired
+	private JmsTemplate jmsTemplate;
+	@Value("${activemq.queue}")
+	private String destination ;
+	
+    public void sendTo(AttendeeDto attendee) {
+        jmsTemplate.convertAndSend(destination, attendee);
+    }
+
+}
+ ```
+ 
+  #### Implementing the Consumer
+  
+  The email-service module is consumer. This module is listening for the arrival of new message so it can send the mail. Below is the dependency needed to implement 
+  consumer:
+  
+  ```
+  		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+  ```
+  Next, we add the configuration information:
+  
+  ```
+  #activemq configuration
+spring.activemq.broker-url=tcp://localhost:61616
+activemq.queue=new.registration
+  ```
+  
+  Then, we created the bean that is needed for the consumer:
+  
+ ```
+ @Configuration
+public class ActiveMQConfiguration {
+
+	@Value("${spring.activemq.broker-url}")
+	private String activemqUrl;
+	@Value("${activemq.queue}")
+	private String activemqQueue;
+
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		return new ActiveMQConnectionFactory(activemqUrl);
+	}
+
+	@Bean
+	public Queue destination() {
+		return new ActiveMQQueue(activemqQueue);
+	}
+
+	@Bean
+	public JmsTemplate jmsTemplate() {
+		JmsTemplate jmsTemplate = new JmsTemplate();
+		jmsTemplate.setConnectionFactory(connectionFactory());
+		jmsTemplate.setReceiveTimeout(1000);
+		return jmsTemplate;
+	}
+
+	@Bean
+	public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+			DefaultJmsListenerContainerFactoryConfigurer configurer) {
+		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+		configurer.configure(factory, connectionFactory);
+		factory.setMessageConverter(jacksonJmsMessageConverter());
+		return factory;
+	}
+
+    @Bean 
+    public MessageConverter jacksonJmsMessageConverter() {
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setTargetType(MessageType.TEXT);
+        converter.setTypeIdPropertyName("_typeId");
+        Map<String, Class<?>> typeIdMappings = new HashMap<String, Class<?>>();
+        typeIdMappings.put("subscriber", EventSubscriber.class);
+        converter.setTypeIdMappings(typeIdMappings);
+        return converter;
+    }
+
+}
+ ```
+  
+  Finally, we consumer class that listen to the arrival of new messages from the broker:
+ 
+ ```
+ @Component
+public class EventNewSubscriberConsumer {
+	
+	@Autowired
+	private EventNotificationService eventNotificationService;
+	
+	@JmsListener(destination = "new.registration")
+	public void consumeMessage(EventSubscriber subscriber) {
+		//eventNotificationService.notifyEventSubscriberByEmail(subscriber);
+		System.out.println(subscriber);
+	}
+
+}
+ ```
+ 
+ 
+ ### RabbitMQ
+ 
+ ### Kafka
+ 
+ 
  
  ## Setup
 
