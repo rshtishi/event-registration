@@ -25,11 +25,11 @@ public class EventNotificationServiceImpl implements EventNotificationService {
 	@Override
 	public void notifyEventSubscriberByEmail(EventSubscriber subscriber) {
 		Map<String, Object> templateModel = new HashMap<>();
-		templateModel.put("name", subscriber.getSubscriberName());
+		templateModel.put("name", subscriber.getName());
 		templateModel.put("event", subscriber.getEventName());
-		templateModel.put("identificationNo",subscriber.getSubcriberIdentificationNo());
+		templateModel.put("identificationNo",subscriber.getRegistrationId());
 		templateModel.put("signature", EVENT_ORGANIZER);
-		Mail mail = new Mail(FROM, subscriber.getSubscriberEmail(), SUBJECT, null);
+		Mail mail = new Mail(FROM, subscriber.getEmail(), SUBJECT, null);
 		emailService.sendEmail(mail);
 	}
 

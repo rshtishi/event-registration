@@ -2,40 +2,41 @@ package com.github.rshtishi.emailservice.entity;
 
 import java.io.Serializable;
 
-public class EventSubscriber implements Serializable{
+public class EventSubscriber implements Serializable {
 
-	private String subscriberName;
-	private String subscriberEmail;
+	private static final long serialVersionUID = 1L;
+
+	private String name;
+	private String email;
 	private String eventName;
-	private String subcriberIdentificationNo;
+	private String registrationId;
 
 	public EventSubscriber() {
 		super();
 	}
 
-	public EventSubscriber(String subscriberName, String subscriberEmail, String eventName,
-			String subcriberIdentificationNo) {
+	public EventSubscriber(String name, String email, String eventName, String registrationId) {
 		super();
-		this.subscriberName = subscriberName;
-		this.subscriberEmail = subscriberEmail;
+		this.name = name;
+		this.email = email;
 		this.eventName = eventName;
-		this.subcriberIdentificationNo = subcriberIdentificationNo;
+		this.registrationId = registrationId;
 	}
 
-	public String getSubscriberName() {
-		return subscriberName;
+	public String getName() {
+		return name;
 	}
 
-	public void setSubscriberName(String subscriberName) {
-		this.subscriberName = subscriberName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getSubscriberEmail() {
-		return subscriberEmail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setSubscriberEmail(String subscriberEmail) {
-		this.subscriberEmail = subscriberEmail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getEventName() {
@@ -46,18 +47,18 @@ public class EventSubscriber implements Serializable{
 		this.eventName = eventName;
 	}
 
-	public String getSubcriberIdentificationNo() {
-		return subcriberIdentificationNo;
+	public String getRegistrationId() {
+		return registrationId;
 	}
 
-	public void setSubcriberIdentificationNo(String subcriberIdentificationNo) {
-		this.subcriberIdentificationNo = subcriberIdentificationNo;
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
 
 	@Override
 	public String toString() {
-		return "EventSubscriber [subscriberName=" + subscriberName + ", subscriberEmail=" + subscriberEmail
-				+ ", eventName=" + eventName + ", subcriberIdentificationNo=" + subcriberIdentificationNo + "]";
+		return "EventSubscriber [name=" + name + ", email=" + email + ", eventName=" + eventName + ", registrationId="
+				+ registrationId + "]";
 	}
 
 }

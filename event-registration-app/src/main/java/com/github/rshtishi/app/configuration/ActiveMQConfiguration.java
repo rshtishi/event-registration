@@ -1,5 +1,8 @@
 package com.github.rshtishi.app.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 
@@ -12,6 +15,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+
+import com.github.rshtishi.app.dto.AttendeeDto;
 
 
 
@@ -46,7 +51,10 @@ public class ActiveMQConfiguration {
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);
-        converter.setTypeIdPropertyName("_subscriber_");
+        converter.setTypeIdPropertyName("_typeId");
+        Map<String, Class<?>> typeIdMappings = new HashMap<String, Class<?>>();
+        typeIdMappings.put("subscriber", AttendeeDto.class);
+        converter.setTypeIdMappings(typeIdMappings);
         return converter;
     }
 }
