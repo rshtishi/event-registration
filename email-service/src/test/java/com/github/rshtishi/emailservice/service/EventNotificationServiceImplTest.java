@@ -39,7 +39,7 @@ class EventNotificationServiceImplTest {
 		//execute
 		eventNotificationService.notifyEventSubscriberByEmail(subscriber);
 		//verify
-		verify(emailService,times(1)).sendEmail(Mockito.any());
+		verify(emailService,times(1)).sendEmail(Mockito.any(), Mockito.anyString(), Mockito.anyMap());
 	}
 
 }
