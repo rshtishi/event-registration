@@ -4,5 +4,5 @@ import com.github.rshtishi.emailservice.entity.EventSubscriber;
 
 public interface EventNotificationService {
 
-	public void notifyEventSubscriberByEmail(EventSubscriber subscriber);
+	public void notifyEventSubscriberByEmail(EventSubscriber subscriber) throws Exception;
 }
