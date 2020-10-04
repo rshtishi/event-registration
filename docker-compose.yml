@@ -1,0 +1,25 @@
+version: '2'
+services:
+  event-registration-ap:
+    image: rshtishi/event-registration-app
+    container_name: event-registration-app
+    depends_on:
+      - activemq
+    environment:
+      - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
+    ports:
+      -  "8081:8081"
+  email-service:
+    image: rshtishi/email-service
+    container_name: email-service
+    depends_on:
+      - activemq
+    environment:
+      - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
+      - SPRING_MAIL_USERNAME=your email
+      - SPRING_MAIL_PASSWORD=your password
+    ports:
+      -  "8082:8082"
+  activemq:
+    image: rmohr/activemq
+    container_name: activemq
