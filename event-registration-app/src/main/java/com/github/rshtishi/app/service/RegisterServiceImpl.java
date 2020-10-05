@@ -31,7 +31,7 @@ public class RegisterServiceImpl implements IRegisterService {
 		attendee.setEvent(event);
 		attendee.setRegistrationId(UUID.randomUUID().toString());
 		attendeeRepository.save(attendee);
-		//producer.sendTo(AttendeeHelper.convert(attendee));
+		producer.sendTo(AttendeeHelper.convert(attendee));
 	}
 
 }
