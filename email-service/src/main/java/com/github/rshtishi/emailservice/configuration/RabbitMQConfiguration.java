@@ -3,15 +3,15 @@ package com.github.rshtishi.emailservice.configuration;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
-
 @Configuration
-public class ActiveMQConfiguration {
+public class RabbitMQConfiguration {
 
 	@Value("${spring.rabbitmq.host}")
 	private String host;
@@ -21,8 +21,8 @@ public class ActiveMQConfiguration {
 	private String password;
 	@Value("${spring.rabbitmq.port}")
 	private Integer port;
-	@Value("${rabbitmq.routing-key}")
-	private String routingKey ;
+	@Value("${rabbitmq.queue}")
+	private String queue;
 
 	@Bean
 	public ConnectionFactory connectionFactory() {
@@ -38,8 +38,12 @@ public class ActiveMQConfiguration {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate();
 		rabbitTemplate.setConnectionFactory(connectionFactory());
 		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
-		rabbitTemplate.setRoutingKey(routingKey);
 		return rabbitTemplate;
 	}
+
+    @Bean
+    public Jackson2JsonMessageConverter converter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
 }
