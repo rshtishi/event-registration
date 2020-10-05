@@ -1,72 +1,45 @@
 package com.github.rshtishi.emailservice.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
-import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.jms.support.converter.MessageType;
-
-import com.github.rshtishi.emailservice.entity.EventSubscriber;
 
 
 
 @Configuration
 public class ActiveMQConfiguration {
 
-	@Value("${spring.activemq.broker-url}")
-	private String activemqUrl;
-	@Value("${activemq.queue}")
-	private String activemqQueue;
+	@Value("${spring.rabbitmq.host}")
+	private String host;
+	@Value("${spring.rabbitmq.username}")
+	private String user;
+	@Value("${spring.rabbitmq.password}")
+	private String password;
+	@Value("${spring.rabbitmq.port}")
+	private Integer port;
+	@Value("${rabbitmq.routing-key}")
+	private String routingKey ;
 
 	@Bean
 	public ConnectionFactory connectionFactory() {
-		return new ActiveMQConnectionFactory(activemqUrl);
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host);
+		connectionFactory.setUsername(user);
+		connectionFactory.setPassword(password);
+		connectionFactory.setPort(port);
+		return connectionFactory;
 	}
 
 	@Bean
-	public Queue destination() {
-		return new ActiveMQQueue(activemqQueue);
+	public RabbitTemplate rabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate();
+		rabbitTemplate.setConnectionFactory(connectionFactory());
+		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+		rabbitTemplate.setRoutingKey(routingKey);
+		return rabbitTemplate;
 	}
-
-	@Bean
-	public JmsTemplate jmsTemplate() {
-		JmsTemplate jmsTemplate = new JmsTemplate();
-		jmsTemplate.setConnectionFactory(connectionFactory());
-		jmsTemplate.setReceiveTimeout(1000);
-		return jmsTemplate;
-	}
-
-	@Bean
-	public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
-			DefaultJmsListenerContainerFactoryConfigurer configurer) {
-		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		configurer.configure(factory, connectionFactory);
-		factory.setMessageConverter(jacksonJmsMessageConverter());
-		return factory;
-	}
-
-    @Bean 
-    public MessageConverter jacksonJmsMessageConverter() {
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.setTargetType(MessageType.TEXT);
-        converter.setTypeIdPropertyName("_typeId");
-        Map<String, Class<?>> typeIdMappings = new HashMap<String, Class<?>>();
-        typeIdMappings.put("subscriber", EventSubscriber.class);
-        converter.setTypeIdMappings(typeIdMappings);
-        return converter;
-    }
 
 }
