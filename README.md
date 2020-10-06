@@ -216,8 +216,193 @@ public class EventNewSubscriberConsumer {
  
  ### RabbitMQ
  
+  RabbitMQ is an implementation AMQP (which stands for 'Advanced Message Queueing Protocol'). AMQP is application layer protocol fordelivering messages across 
+  multiple languages and platforms.
+  
+   #### Implementing the Producer
+   
+   First, add the following dependencies in the pom file:
+   
+   ```
+   		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+   ```
+   
+   Next, add the configuration information in application properties file:
+   
+   ```
+ #rabbitmq
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=admin
+spring.rabbitmq.password=admin
+
+rabbitmq.routing-key=new.registration
+   ```
+   
+   Then, create the bean needed for the producer:
+   
+   ```
+@Configuration
+public class RabbitMQConfiguration {
+
+	@Value("${spring.rabbitmq.host}")
+	private String host;
+	@Value("${spring.rabbitmq.username}")
+	private String user;
+	@Value("${spring.rabbitmq.password}")
+	private String password;
+	@Value("${spring.rabbitmq.port}")
+	private Integer port;
+	@Value("${rabbitmq.routing-key}")
+	private String routingKey ;
+
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host);
+		connectionFactory.setUsername(user);
+		connectionFactory.setPassword(password);
+		connectionFactory.setPort(port);
+		return connectionFactory;
+	}
+
+	@Bean
+	public RabbitTemplate rabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate();
+		rabbitTemplate.setConnectionFactory(connectionFactory());
+		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+		rabbitTemplate.setRoutingKey(routingKey);
+		return rabbitTemplate;
+	}
+}
+   ```
+   
+   Finally, implement the producer as below:
+   
+   ```
+@Component
+public class RegistrationEventProducer {
+
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
+	@Value("${rabbitmq.routing-key}")
+	private String destination ;
+	
+    public void sendTo(AttendeeDto attendee) {
+        rabbitTemplate.convertAndSend(destination, attendee);
+    }
+
+}
+   ```
+   
+   #### Implementing the Consumer
+   
+   First, the following dependencies in the pom file:
+   
+   ```
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+   ```
+   
+   Next, add the configuration information in the application properties file:
+   
+   ```
+#rabbitmq
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=admin
+spring.rabbitmq.password=admin
+
+rabbitmq.queue=new.registration
+   ```
+   
+   Then, create the bean needed for the consumer:
+   
+   ```
+@Configuration
+public class RabbitMQConfiguration {
+
+	@Value("${spring.rabbitmq.host}")
+	private String host;
+	@Value("${spring.rabbitmq.username}")
+	private String user;
+	@Value("${spring.rabbitmq.password}")
+	private String password;
+	@Value("${spring.rabbitmq.port}")
+	private Integer port;
+	@Value("${rabbitmq.queue}")
+	private String queue;
+
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host);
+		connectionFactory.setUsername(user);
+		connectionFactory.setPassword(password);
+		connectionFactory.setPort(port);
+		return connectionFactory;
+	}
+
+	@Bean
+	public RabbitTemplate rabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate();
+		rabbitTemplate.setConnectionFactory(connectionFactory());
+		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+		return rabbitTemplate;
+	}
+
+    @Bean
+    public Jackson2JsonMessageConverter converter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+}
+   ```
+   
+   Finally, implement the consumer as below:
+   
+   ```
+@Component
+public class EventNewSubscriberConsumer {
+	
+	@Autowired
+	private EventNotificationService eventNotificationService;
+	
+	@RabbitListener(queues = "new.registration")
+	public void consumeMessage(EventSubscriber subscriber) throws Exception {
+		eventNotificationService.notifyEventSubscriberByEmail(subscriber);
+		System.out.println(subscriber);
+	}
+
+}
+   ```
+ 
  ### Kafka
  
+ 
+   #### Implementing the Producer
+   
+   First, add the following dependencies in the pom file:
+   
+   Next, add the configuration information in application properties file:
+   
+   Then, create the bean needed for the producer:
+   
+   Finally, implement the producer as below:
+   
+   
+   #### Implementing the Consumer
+   
+   First, the following dependencies in the pom file:
+   
+   Next, add the configuration information in the application properties file:
+   
+   Then, create the bean needed for the consumer:
+   
+   Finally, implement the consumer as below:
  
  
  ## Setup
