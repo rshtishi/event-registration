@@ -1,8 +1,8 @@
 package com.github.rshtishi.app.producer;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.github.rshtishi.app.dto.AttendeeDto;
@@ -11,12 +11,13 @@ import com.github.rshtishi.app.dto.AttendeeDto;
 public class RegistrationEventProducer {
 
 	@Autowired
-	private RabbitTemplate rabbitTemplate;
-	@Value("${rabbitmq.routing-key}")
-	private String destination ;
-	
-    public void sendTo(AttendeeDto attendee) {
-        rabbitTemplate.convertAndSend(destination, attendee);
-    }
+	private KafkaTemplate<String, AttendeeDto> kafkaTemplate;
+
+	@Value("${spring.kafka.template.default-topic}")
+	private String destination;
+
+	public void sendTo(AttendeeDto attendee) {
+		kafkaTemplate.send(destination, attendee);
+	}
 
 }
