@@ -14,7 +14,7 @@ public class EventNewSubscriberConsumer {
 	@Autowired
 	private EventNotificationService eventNotificationService;
 
-	@KafkaListener(topics = "new-registration")
+	@KafkaListener(topics = "new-registration", groupId = "email")
 	public void consumeMessage(EventSubscriber subscriber) throws Exception {
 		// eventNotificationService.notifyEventSubscriberByEmail(subscriber);
 		System.out.println(subscriber);
