@@ -542,7 +542,7 @@ public class EventNewSubscriberConsumer {
 	- run ```mvn clean install``` on event-registration project
 	- start event-registration-app application with maven command: ```mvn spring-boot:run```
 	- start email-service application with maven command ```mvn spring-boot:run```
-	- access the application in url: ```http://localhost:8081`
+	- access the application in url: ```http://localhost:8081```
  
  
   - Version 3 (Kafka)
@@ -552,6 +552,6 @@ public class EventNewSubscriberConsumer {
 	- run ```mvn clean install``` on event-registration project
 	- start event-registration-app application with maven command: ```mvn spring-boot:run```
 	- start email-service application with maven command ```mvn spring-boot:run```
-	- access the application in url: ```http://localhost:8081`
+	- access the application in url: ```http://localhost:8081```
 
 
