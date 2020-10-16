@@ -1,34 +1,29 @@
 version: '2'
 services:
   event-registration-ap:
-    image: rshtishi/event-registration-v2
+    image: rshtishi/event-registration-v3
     container_name: event-registration-app
     depends_on:
-      - rabbitmq
+      - kafka
     environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_TEMPLATE_DEFAULT-TOPIC=new-registration
     ports:
       -  "8081:8081"
   email-service:
-    image: rshtishi/email-service-v2 
+    image: rshtishi/email-service-v3 
     container_name: email-service
     depends_on:
-      - rabbitmq
+      - kafka
     environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_MAIL_USERNAME=your email
-      - SPRING_MAIL_PASSWORD=your password
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_TEMPLATE_DEFAULT-TOPIC=new-registration
     ports:
       -  "8082:8082"
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq 
+  kafka:
+    image: spotify/kafkaproxy 
+    container_name: kafka
     ports:
-      - 15672:15672
-      - 5672:5672
-    volumes:
-      - ./rabbitmq/definitions.json:/opt/rabbitmq/definitions.json
+      - 9092:9092
     environment:
-     - RABBITMQ_DEFAULT_USER=admin
-     - RABBITMQ_DEFAULT_PASS=admin
-     - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management load_definitions "/opt/rabbitmq/definitions.json"
+      - TOPICS=new-registration
