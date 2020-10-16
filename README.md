@@ -387,24 +387,171 @@ public class EventNewSubscriberConsumer {
    
    First, add the following dependencies in the pom file:
    
+   ```
+   		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+   ```
+   
    Next, add the configuration information in application properties file:
+   
+   ```
+   #kafka
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.template.default-topic=new-registration
+   ```
    
    Then, create the bean needed for the producer:
    
+   ```
+   @Configuration
+public class KafkaConfiguration {
+
+	@Value("${spring.kafka.bootstrap-servers}")
+	private String bootstrapAddress;
+
+	@Bean
+	public ProducerFactory<String, AttendeeDto> producerFactory() {
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AttendeeDtoSerializer.class);
+		return new DefaultKafkaProducerFactory<>(configProps);
+	}
+
+	@Bean
+	public KafkaTemplate<String, AttendeeDto> kafkaTemplate() {
+		return new KafkaTemplate<>(producerFactory());
+	}
+	
+}
+   ```
+   
    Finally, implement the producer as below:
+   
+   ```
+@Component
+public class RegistrationEventProducer {
+
+	@Autowired
+	private KafkaTemplate<String, AttendeeDto> kafkaTemplate;
+
+	@Value("${spring.kafka.template.default-topic}")
+	private String destination;
+
+	public void sendTo(AttendeeDto attendee) {
+		kafkaTemplate.send(destination, attendee);
+	}
+
+}
+   ```
    
    
    #### Implementing the Consumer
    
    First, the following dependencies in the pom file:
    
+   ```
+   		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+   ```
+   
    Next, add the configuration information in the application properties file:
+   
+   ```
+   #kafka
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.template.default-topic=new-registration
+   ```
    
    Then, create the bean needed for the consumer:
    
+   ```
+ @Configuration
+public class KafkaConfiguration {
+
+	@Value("${spring.kafka.bootstrap-servers}")
+	private String bootstrapAddress;
+	private static final String GROUP_ID = "email";
+
+	@Bean
+	public Map<String, Object> consumerConfigs() {
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		return props;
+	}
+
+	@Bean
+	public ConsumerFactory<String, EventSubscriber> consumerFactory() {
+		return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+				new JsonDeserializer<>(EventSubscriber.class));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, EventSubscriber> kafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, EventSubscriber> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(consumerFactory());
+		return factory;
+	}
+
+}
+   ```
+   
    Finally, implement the consumer as below:
+   
+   ```
+   @Component
+public class EventNewSubscriberConsumer {
+
+	@Autowired
+	private EventNotificationService eventNotificationService;
+
+	@KafkaListener(topics = "new-registration", groupId = "email")
+	public void consumeMessage(EventSubscriber subscriber) throws Exception {
+		eventNotificationService.notifyEventSubscriberByEmail(subscriber);
+		System.out.println(subscriber);
+	}
+
+}
+   ```
  
  
  ## Setup
+ 
+ - Version 1 (ActiveMQ)
+ 	- install ActiveMQ
+	- start ActiveMQ
+	- create a queue named ```new.registration```
+	- run ```mvn clean install``` on event-registration project
+	- start event-registration-app application with maven command: ```mvn spring-boot:run```
+	- start email-service application with maven command ```mvn spring-boot:run```
+	- access the application in url: ```http://localhost:8081```
+	
+ - Version 2 (RabbitMQ)
+ 	- install RabbitMQ
+	- start RabbitMQ
+	- create queue ```new.registration```
+	- create exchange ```new.registration```
+	- create binding of exchange with queue created above with ```new.registration``` as routing key
+	- run ```mvn clean install``` on event-registration project
+	- start event-registration-app application with maven command: ```mvn spring-boot:run```
+	- start email-service application with maven command ```mvn spring-boot:run```
+	- access the application in url: ```http://localhost:8081```
+ 
+ 
+  - Version 3 (Kafka)
+ 	- install Kafka
+	- start Kafka
+	- create topic ```new.registration```
+	- run ```mvn clean install``` on event-registration project
+	- start event-registration-app application with maven command: ```mvn spring-boot:run```
+	- start email-service application with maven command ```mvn spring-boot:run```
+	- access the application in url: ```http://localhost:8081```
 
 
