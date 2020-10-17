@@ -554,4 +554,20 @@ public class EventNewSubscriberConsumer {
 	- start email-service application with maven command ```mvn spring-boot:run```
 	- access the application in url: ```http://localhost:8081```
 
+### Setup with Docker
+
+Prerequisite:
+
+	- Docker should be already installed
+	- Docker-compose should be installed
+	
+Setup step:
+
+	- checkout version you want to run
+		- ```git checkout version1.0``` (Event Registration with ActiveMQ )
+		- ```git checkout version2.0``` (Event Registration with RabbitMQ)
+		- ```git checkout version3.0``` (Event Registration with Kafka)
+	- open terminal from event_registration folder
+	- run the command : ```docker-compose up```
+	
 
