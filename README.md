@@ -567,7 +567,7 @@ Setup step:
 		- ```git checkout version1.0``` (Event Registration with ActiveMQ )
 		- ```git checkout version2.0``` (Event Registration with RabbitMQ)
 		- ```git checkout version3.0``` (Event Registration with Kafka)
-	- open terminal from event_registration folder
+	- open terminal from event-registration folder
 	- run the command : ```docker-compose up```
 	
 
